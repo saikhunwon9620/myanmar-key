@@ -25,7 +25,7 @@ jobs:
         run: |
           xcodebuild \
             -project MyanmarKey.xcodeproj \
-            -target MyanmarKey \
+            -scheme MyanmarKey \
             -configuration Release \
             -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO

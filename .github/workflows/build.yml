@@ -1,0 +1,50 @@
+# GitHub Actions — MyanmarKey ကို cloud ပေါ်က Mac မှာ auto-build လုပ်တာ။
+# Xcode ဒေါင်းလုဒ်ဆွဲစရာ မလိုဘူး။ main branch ကို push လုပ်တိုင်း run မယ်။
+# ပြီးရင် Releases page (tag: latest) မှာ MyanmarKey.app.zip ရမယ်။
+name: Build MyanmarKey
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Build Release
+        run: |
+          xcodebuild \
+            -project MyanmarKey.xcodeproj \
+            -target MyanmarKey \
+            -configuration Release \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Ad-hoc sign the app
+        run: |
+          codesign --force -s - --deep build/Build/Products/Release/MyanmarKey.app
+          codesign --verify --verbose build/Build/Products/Release/MyanmarKey.app || true
+
+      - name: Zip the app (macOS-safe)
+        run: |
+          cd build/Build/Products/Release
+          ditto -c -k --sequesterRsrc --keepParent MyanmarKey.app MyanmarKey.app.zip
+          ls -la MyanmarKey.app.zip
+
+      - name: Publish to Releases (tag latest)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: MyanmarKey latest build
+          body: Auto-built by GitHub Actions. Download MyanmarKey.app.zip, unzip, and copy MyanmarKey.app to ~/Library/Input Methods/. No Xcode needed.
+          files: build/Build/Products/Release/MyanmarKey.app.zip

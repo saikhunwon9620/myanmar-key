@@ -238,7 +238,7 @@ final class InputController: IMKInputController {
             selectionRange: NSRange(location: 0, length: 0),
             replacementRange: NSRange(location: NSNotFound, length: NSNotFound)
         )
-        client.unmarkText()
+        client.insertText("" as NSString, replacementRange: NSRange(location: NSNotFound, length: NSNotFound))
         composedText = ""
     }
 }

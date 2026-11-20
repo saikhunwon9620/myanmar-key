@@ -176,7 +176,7 @@ final class InputController: IMKInputController {
             return client
         }
         // sender က client မဟုတ်ရင် controller ရဲ့ client() ကနေ ယူမယ်။
-        return self.client() as? IMKTextInput
+        return self.client()
     }
 
     /// Backspace — ရိုက်နေတဲ့ စာထဲက နောက်ဆုံး codepoint တစ်လုံး ဖျက်မယ်။
@@ -213,7 +213,7 @@ final class InputController: IMKInputController {
         let text = composedText as NSString
         client.setMarkedText(
             text,
-            selectedRange: NSRange(location: text.length, length: 0),
+            selectionRange: NSRange(location: text.length, length: 0),
             replacementRange: NSRange(location: NSNotFound, length: NSNotFound)
         )
     }
@@ -235,7 +235,7 @@ final class InputController: IMKInputController {
         // (unmarkText() ကိုပဲ ခေါ်ရင် စာက အတည်ပြုသွားမှာမို့ အရင် အလွတ် လုပ်ရမယ်။)
         client.setMarkedText(
             "" as NSString,
-            selectedRange: NSRange(location: 0, length: 0),
+            selectionRange: NSRange(location: 0, length: 0),
             replacementRange: NSRange(location: NSNotFound, length: NSNotFound)
         )
         client.unmarkText()
